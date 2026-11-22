@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+
+{% block title %}Explore Learning Paths | CyberQuest{% endblock %}
+{% block body_class %} cq-learning-page{% endblock %}
+
+{% block extra_head %}
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js" defer></script>
+{% endblock %}
+
+{% block content %}
+  <section class="cq-learning-hero" aria-labelledby="learning-title">
+    <p class="cq-kicker">Quest selection</p>
+    <h1 id="learning-title">Explore Cybersecurity Learning Paths</h1>
+    <p class="cq-learning-subtitle">
+      Choose a path, build your skills and become more confident in the digital world.
+    </p>
+    <div class="cq-learning-summary">
+      <span>
+        <i data-lucide="route" class="cq-icon"></i>
+        {{ learning_paths|length }} published path{{ learning_paths|length|pluralize }}
+      </span>
+      <span>
+        <i data-lucide="shield-check" class="cq-icon"></i>
+        Beginner-friendly content
+      </span>
+      <span>
+        <i data-lucide="database" class="cq-icon"></i>
+        Stored in the CyberQuest database
+      </span>
+    </div>
+  </section>
+
+  {% if learning_paths %}
+    <div class="cq-learning-grid">
+      {% for path in learning_paths %}
+        <article class="card cq-learning-card">
+          <div class="card-body">
+            <div class="d-flex align-items-start justify-content-between gap-2 mb-3">
+              <span class="cq-path-icon tone-{{ path.tone }}">
+                <i data-lucide="{{ path.icon }}" class="cq-icon"></i>
+              </span>
+              <span class="cq-difficulty">{{ path.get_difficulty_display }}</span>
+            </div>
+
+            <h2 class="h5 mb-2">{{ path.title }}</h2>
+            <p class="cq-path-description">{{ path.description }}</p>
+
+            <div class="cq-learning-meta">
+              <span>
+                <i data-lucide="book-open" class="cq-icon"></i>
+                {{ path.lesson_count }} lesson{{ path.lesson_count|pluralize }}
+              </span>
+              <span>
+                <i data-lucide="clock-3" class="cq-icon"></i>
+                {{ path.estimated_duration }} min
+              </span>
+            </div>
+
+            <a
+              class="btn btn-cq-glow w-100 mt-3"
+              href="{% url 'learning_path_detail' path.slug %}"
+            >
+              Explore Path
+            </a>
+          </div>
+        </article>
+      {% endfor %}
+    </div>
+  {% else %}
+    <div class="cq-learning-empty" role="status">
+      <span class="cq-path-icon tone-green">
+        <i data-lucide="route" class="cq-icon"></i>
+      </span>
+      <h2 class="h4">No published paths yet</h2>
+      <p class="cq-muted">
+        Learning paths will appear here after an administrator publishes them, or after
+        you run the seed command.
+      </p>
+      <a class="btn btn-cq-outline" href="{% url 'home' %}">Back to Home</a>
+    </div>
+  {% endif %}
+{% endblock %}

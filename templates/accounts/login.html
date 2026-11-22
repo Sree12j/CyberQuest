@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+
+{% block title %}Welcome Back | CyberQuest{% endblock %}
+{% block body_class %} cq-auth-page{% endblock %}
+
+{% block content %}
+  <div class="row justify-content-center align-items-center cq-auth-shell">
+    <div class="col-12 col-sm-10 col-md-8 col-lg-5">
+      <div class="cq-brand text-center mb-4">
+        <span class="cq-brand-mark" aria-hidden="true">CQ</span>
+        <a class="cq-brand-text" href="{% url 'home' %}">CyberQuest</a>
+      </div>
+
+      <div class="card cq-auth-card">
+        <div class="card-body p-4 p-sm-5">
+          <p class="cq-eyebrow">Resume your quest</p>
+          <h1 class="h3 mb-2">Welcome Back</h1>
+          <p class="cq-muted mb-4">
+            Sign in to continue your cybersecurity training.
+          </p>
+
+          {% if form.non_field_errors %}
+            <div class="alert alert-danger py-2" role="alert">
+              {% for error in form.non_field_errors %}{{ error }}{% endfor %}
+            </div>
+          {% endif %}
+
+          <form method="post" novalidate>
+            {% csrf_token %}
+            <input type="hidden" name="next" value="{{ next }}">
+
+            <div class="mb-3">
+              <label for="{{ form.username.id_for_label }}" class="form-label">Username</label>
+              <input
+                type="text"
+                class="form-control cq-input{% if form.username.errors %} is-invalid{% endif %}"
+                id="{{ form.username.id_for_label }}"
+                name="{{ form.username.html_name }}"
+                value="{{ form.username.value|default:'' }}"
+                autocomplete="username"
+                required
+              >
+              {% for error in form.username.errors %}
+                <div class="invalid-feedback d-block">{{ error }}</div>
+              {% endfor %}
+            </div>
+
+            <div class="mb-4">
+              <label for="{{ form.password.id_for_label }}" class="form-label">Password</label>
+              <input
+                type="password"
+                class="form-control cq-input{% if form.password.errors %} is-invalid{% endif %}"
+                id="{{ form.password.id_for_label }}"
+                name="{{ form.password.html_name }}"
+                autocomplete="current-password"
+                required
+              >
+              {% for error in form.password.errors %}
+                <div class="invalid-feedback d-block">{{ error }}</div>
+              {% endfor %}
+            </div>
+
+            <button type="submit" class="btn btn-cq-primary w-100">Login</button>
+          </form>
+
+          <p class="cq-muted text-center mt-4 mb-0">
+            New to CyberQuest?
+            <a class="cq-link" href="{% url 'register' %}">Create an account</a>
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}

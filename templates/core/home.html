@@ -1,0 +1,297 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}CyberQuest{% endblock %}
+{% block body_class %} cq-home-page{% endblock %}
+
+{% block extra_head %}
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js" defer></script>
+  <script src="{% static 'js/home.js' %}" defer></script>
+{% endblock %}
+
+{% block content %}
+  <div class="cq-home-shell">
+    <section class="cq-home-hero" aria-labelledby="home-hero-title" data-reveal>
+      <div class="cq-hero-orb cq-hero-orb-one" aria-hidden="true"></div>
+      <div class="cq-hero-orb cq-hero-orb-two" aria-hidden="true"></div>
+      <div class="cq-hero-grid" aria-hidden="true"></div>
+
+      <div class="cq-hero-copy">
+        <span class="cq-home-badge">
+          <i data-lucide="shield-check" class="cq-icon"></i>
+          Learn safely · Practice locally
+        </span>
+
+        <h1 id="home-hero-title">
+          Your cybersecurity adventure starts with <span>one smart move.</span>
+        </h1>
+
+        <p class="cq-home-lead">
+          Explore guided lessons, investigate simulated threats and build safer
+          digital habits — no real accounts, passwords or networks involved.
+        </p>
+
+        <div class="cq-hero-actions">
+          <a class="btn btn-cq-glow btn-lg" href="{% url 'learning_paths' %}">
+            <i data-lucide="route" class="cq-icon"></i>
+            Explore Learning Paths
+          </a>
+          {% if user.is_authenticated %}
+            <a class="btn btn-cq-outline btn-lg" href="{% url 'challenge_home' %}">
+              <i data-lucide="crosshair" class="cq-icon"></i>
+              Open Challenge Lab
+            </a>
+          {% else %}
+            <a class="btn btn-cq-outline btn-lg" href="{% url 'register' %}">
+              <i data-lucide="user-plus" class="cq-icon"></i>
+              Create Free Account
+            </a>
+          {% endif %}
+        </div>
+
+        <div class="cq-hero-trust" aria-label="CyberQuest principles">
+          <span><i data-lucide="circle-check" class="cq-icon"></i> Beginner friendly</span>
+          <span><i data-lucide="circle-check" class="cq-icon"></i> Hands-on simulations</span>
+          <span><i data-lucide="circle-check" class="cq-icon"></i> Session-only scores</span>
+        </div>
+      </div>
+
+      <div class="cq-hero-console" aria-label="Interactive safety habit preview">
+        <div class="cq-console-window">
+          <div class="cq-console-bar">
+            <span class="cq-console-dots" aria-hidden="true"><i></i><i></i><i></i></span>
+            <span>cyberquest://habit-check</span>
+            <span class="cq-console-lock"><i data-lucide="lock" class="cq-icon"></i></span>
+          </div>
+
+          <div class="cq-console-body">
+            <div class="cq-console-status">
+              <span>status</span>
+              <strong id="cq-scan-status" aria-live="polite">Standing by</strong>
+            </div>
+
+            <div class="cq-console-bars" aria-hidden="true">
+              <span></span><span></span><span></span><span></span><span></span>
+            </div>
+
+            <ul class="cq-scan-log" id="cq-scan-log" aria-live="polite">
+              <li>Local simulation ready.</li>
+              <li>No device or network information is used.</li>
+            </ul>
+
+            <button type="button" class="btn btn-cq-glow w-100" id="cq-scan-button">
+              <i data-lucide="play" class="cq-icon"></i>
+              <span id="cq-scan-button-label">Run Habit Check</span>
+            </button>
+          </div>
+        </div>
+
+        <p class="cq-console-note">
+          Just a preview. The full missions run in your browser and on the server — never on real accounts.
+        </p>
+      </div>
+    </section>
+
+    <section class="cq-home-stats" aria-label="CyberQuest overview" data-reveal>
+      <article class="cq-home-stat">
+        <i data-lucide="crosshair" class="cq-icon"></i>
+        <div><strong>4</strong><span>interactive missions</span></div>
+      </article>
+      <article class="cq-home-stat">
+        <i data-lucide="route" class="cq-icon"></i>
+        <div><strong>{{ total_paths }}</strong><span>published paths</span></div>
+      </article>
+      <article class="cq-home-stat">
+        <i data-lucide="book-open" class="cq-icon"></i>
+        <div><strong>{{ total_lessons }}</strong><span>guided lessons</span></div>
+      </article>
+      <article class="cq-home-stat">
+        <i data-lucide="timer" class="cq-icon"></i>
+        <div><strong>Session</strong><span>scores only</span></div>
+      </article>
+    </section>
+
+    <section class="cq-home-section" id="how-it-works" aria-labelledby="how-title" data-reveal>
+      <div class="cq-section-intro">
+        <p class="cq-kicker">How CyberQuest works</p>
+        <h2 id="how-title">Learn it. Try it. Understand it.</h2>
+        <p>Every activity is a safe step forward, with clear feedback and no pressure to get it right the first time.</p>
+      </div>
+
+      <div class="cq-step-grid">
+        <article class="cq-step-card">
+          <span class="cq-step-number">01</span>
+          <span class="cq-step-icon tone-cyan"><i data-lucide="book-open" class="cq-icon"></i></span>
+          <h3>Follow a path</h3>
+          <p>Short lessons introduce one cybersecurity idea at a time.</p>
+        </article>
+        <article class="cq-step-card">
+          <span class="cq-step-number">02</span>
+          <span class="cq-step-icon tone-green"><i data-lucide="crosshair" class="cq-icon"></i></span>
+          <h3>Enter the lab</h3>
+          <p>Investigate simulated emails, passwords, privacy choices and networks.</p>
+        </article>
+        <article class="cq-step-card">
+          <span class="cq-step-number">03</span>
+          <span class="cq-step-icon tone-purple"><i data-lucide="lightbulb" class="cq-icon"></i></span>
+          <h3>Learn from feedback</h3>
+          <p>Every answer reveals a plain-language explanation and a practical tip.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="cq-home-section cq-mission-section" id="missions" aria-labelledby="missions-title" data-reveal>
+      <div class="cq-section-intro cq-section-intro-split">
+        <div>
+          <p class="cq-kicker">Choose your quest</p>
+          <h2 id="missions-title">Four missions. One safer you.</h2>
+          <p>Pick a mission to explore. Each one is beginner friendly and uses simulated data only.</p>
+        </div>
+        <a class="btn btn-cq-outline" href="{% url 'challenge_home' %}">
+          View all missions
+          <i data-lucide="arrow-right" class="cq-icon"></i>
+        </a>
+      </div>
+
+      <div class="cq-home-mission-grid">
+        {% for mission in missions %}
+          <a class="card cq-home-mission-card" href="{{ mission.url }}" data-tilt data-tone="{{ mission.tone }}">
+            <div class="card-body">
+              <div class="cq-mission-card-top">
+                <span class="cq-home-mission-icon tone-{{ mission.tone }}">
+                  <i data-lucide="{{ mission.icon }}" class="cq-icon"></i>
+                </span>
+                <span class="cq-mission-number">{{ mission.number }}</span>
+              </div>
+              <h3>{{ mission.title }}</h3>
+              <p>{{ mission.description }}</p>
+              <div class="cq-mission-meta">
+                <span><i data-lucide="signal" class="cq-icon"></i> {{ mission.difficulty }}</span>
+                <span><i data-lucide="clock-3" class="cq-icon"></i> {{ mission.estimated_time }}</span>
+              </div>
+              <span class="cq-mission-link">
+                View mission
+                <i data-lucide="arrow-up-right" class="cq-icon"></i>
+              </span>
+            </div>
+          </a>
+        {% endfor %}
+      </div>
+    </section>
+
+    <section class="cq-home-section cq-quick-section" id="quick-check" aria-labelledby="quick-title" data-reveal>
+      <div class="cq-section-intro">
+        <p class="cq-kicker">Try it now</p>
+        <h2 id="quick-title">Quick safety check</h2>
+        <p>Choose a situation and reveal a practical tip. This mini-demo is local, unscored and fictional.</p>
+      </div>
+
+      <div class="cq-quick-layout">
+        <div class="cq-quick-tabs" role="tablist" aria-label="Safety situations">
+          <button type="button" role="tab" id="tab-email" aria-controls="panel-email" aria-selected="true" tabindex="0" data-check-tab="email">
+            <i data-lucide="mail-warning" class="cq-icon"></i>
+            Suspicious email
+          </button>
+          <button type="button" role="tab" id="tab-password" aria-controls="panel-password" aria-selected="false" tabindex="-1" data-check-tab="password">
+            <i data-lucide="key-round" class="cq-icon"></i>
+            New password
+          </button>
+          <button type="button" role="tab" id="tab-wifi" aria-controls="panel-wifi" aria-selected="false" tabindex="-1" data-check-tab="wifi">
+            <i data-lucide="wifi" class="cq-icon"></i>
+            Public Wi-Fi
+          </button>
+        </div>
+
+        <div class="cq-quick-panels">
+          <article class="cq-check-panel" role="tabpanel" id="panel-email" aria-labelledby="tab-email" data-check-panel="email">
+            <span class="cq-panel-tag">Scenario 01</span>
+            <h3>“Your account closes in 10 minutes — confirm your password now.”</h3>
+            <p>What is the safest first move?</p>
+            <button type="button" class="btn btn-cq-outline btn-sm" data-reveal-guidance>Reveal guidance</button>
+            <div class="cq-guidance" hidden>
+              <i data-lucide="lightbulb" class="cq-icon"></i>
+              <p>Pause. Check the sender, avoid the link and open the service directly in your browser. Urgency is a common pressure tactic.</p>
+            </div>
+          </article>
+
+          <article class="cq-check-panel" role="tabpanel" id="panel-password" aria-labelledby="tab-password" data-check-panel="password" hidden>
+            <span class="cq-panel-tag">Scenario 02</span>
+            <h3>You need a password for a new game account.</h3>
+            <p>What would make it harder to guess?</p>
+            <button type="button" class="btn btn-cq-outline btn-sm" data-reveal-guidance>Reveal guidance</button>
+            <div class="cq-guidance" hidden>
+              <i data-lucide="lightbulb" class="cq-icon"></i>
+              <p>Use a long, unique passphrase and a password manager. Add multi-factor authentication when the account offers it.</p>
+            </div>
+          </article>
+
+          <article class="cq-check-panel" role="tabpanel" id="panel-wifi" aria-labelledby="tab-wifi" data-check-panel="wifi" hidden>
+            <span class="cq-panel-tag">Scenario 03</span>
+            <h3>A café lists two Wi-Fi names that look almost identical.</h3>
+            <p>How do you choose?</p>
+            <button type="button" class="btn btn-cq-outline btn-sm" data-reveal-guidance>Reveal guidance</button>
+            <div class="cq-guidance" hidden>
+              <i data-lucide="lightbulb" class="cq-icon"></i>
+              <p>Ask staff for the exact name. A network name is not proof of safety, so stick to HTTPS and avoid sensitive tasks on an untrusted connection.</p>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="cq-home-section cq-path-section" id="paths" aria-labelledby="paths-title" data-reveal>
+      <div class="cq-section-intro cq-section-intro-split">
+        <div>
+          <p class="cq-kicker">Start with a lesson</p>
+          <h2 id="paths-title">Guided learning paths</h2>
+          <p>Real published paths from the CyberQuest library. No progress is tracked yet.</p>
+        </div>
+        <a class="btn btn-cq-outline" href="{% url 'learning_paths' %}">
+          Browse all paths
+          <i data-lucide="arrow-right" class="cq-icon"></i>
+        </a>
+      </div>
+
+      {% if featured_paths %}
+        <div class="cq-home-path-grid">
+          {% for path in featured_paths %}
+            <a class="card cq-home-path-card" href="{% url 'learning_path_detail' path.slug %}">
+              <div class="card-body">
+                <span class="cq-path-icon tone-{{ path.tone }}">
+                  <i data-lucide="{{ path.icon }}" class="cq-icon"></i>
+                </span>
+                <h3>{{ path.title }}</h3>
+                <p>{{ path.description|truncatechars:110 }}</p>
+                <span class="cq-path-meta">
+                  <i data-lucide="book-open" class="cq-icon"></i>
+                  {{ path.lesson_count }} lesson{{ path.lesson_count|pluralize }}
+                </span>
+              </div>
+            </a>
+          {% endfor %}
+        </div>
+      {% else %}
+        <p class="cq-home-empty">No published paths yet. Check back soon.</p>
+      {% endif %}
+    </section>
+
+    <section class="cq-home-cta" aria-labelledby="cta-title" data-reveal>
+      <span class="cq-cta-icon"><i data-lucide="shield" class="cq-icon"></i></span>
+      <div>
+        <h2 id="cta-title">Ready for your first quest?</h2>
+        <p>Start with a short lesson, then put your skills to work in the challenge lab.</p>
+      </div>
+      <div class="cq-cta-actions">
+        <a class="btn btn-cq-glow" href="{% url 'learning_paths' %}">
+          Start learning
+          <i data-lucide="arrow-right" class="cq-icon"></i>
+        </a>
+        {% if user.is_authenticated %}
+          <a class="btn btn-cq-outline" href="{% url 'dashboard' %}">Open Dashboard</a>
+        {% else %}
+          <a class="btn btn-cq-outline" href="{% url 'login' %}">Log in</a>
+        {% endif %}
+      </div>
+    </section>
+  </div>
+{% endblock %}

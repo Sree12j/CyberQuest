@@ -1,0 +1,66 @@
+<article class="card cq-activity-card" aria-labelledby="activity-heading">
+  <div class="card-body">
+    <p class="cq-kicker">{{ step.eyebrow }}</p>
+    <h2 class="h4" id="activity-heading">{{ step.title }}</h2>
+    <p class="cq-challenge-copy">{{ step.intro }}</p>
+
+    <div class="cq-safety-banner" role="note">
+      <i data-lucide="info" class="cq-icon"></i>
+      <div>
+        Fictional networks only. This page never scans real Wi-Fi, collects device
+        network information or connects to a network.
+      </div>
+    </div>
+
+    <div class="cq-wifi-grid" role="group" aria-label="Fictional Wi-Fi networks">
+      <button type="button" class="cq-wifi-card" data-wifi="home"
+        data-explanation="HomeNet is password protected and shows WPA2/WPA3 in this simulation. Encryption protects the wireless link, but it is not a guarantee of complete safety. Use trusted devices and keep the router updated.">
+        <i data-lucide="home" class="cq-icon"></i>
+        <strong>HomeNet</strong>
+        <span>Password protected</span>
+        <span>Simulated WPA2/WPA3</span>
+      </button>
+
+      <button type="button" class="cq-wifi-card" data-wifi="public"
+        data-explanation="Free_Public_WiFi is an open network in a public location. Traffic may be easier to observe or interfere with. Verify the exact name with the venue, use HTTPS and avoid sensitive activity on an untrusted connection.">
+        <i data-lucide="wifi" class="cq-icon"></i>
+        <strong>Free_Public_WiFi</strong>
+        <span>Open network · no password</span>
+        <span>Public location</span>
+      </button>
+
+      <button type="button" class="cq-wifi-card" data-wifi="office"
+        data-explanation="SecureOffice is password protected with simulated WPA2/WPA3 and is presented as a verified workplace network. Even on a trusted network, keep HTTPS enabled and follow your organisation's guidance.">
+        <i data-lucide="building-2" class="cq-icon"></i>
+        <strong>SecureOffice</strong>
+        <span>Password protected</span>
+        <span>Verified in this simulation</span>
+      </button>
+
+      <button type="button" class="cq-wifi-card is-suspicious" data-wifi="unknown"
+        data-explanation="Unknown_WiFi looks similar to a known network and has an unverified source. A fake hotspot can use a misleading name. Confirm the name with the venue before connecting.">
+        <i data-lucide="triangle-alert" class="cq-icon"></i>
+        <strong>Unknown_WiFi</strong>
+        <span>Similar to a known network</span>
+        <span>Unverified source</span>
+      </button>
+    </div>
+
+    <div id="cq-wifi-explanation" class="cq-wifi-explanation" aria-live="polite">
+      Select a network to inspect its simulated security information.
+    </div>
+
+    <div class="cq-lesson-box mt-3">
+      <i data-lucide="lightbulb" class="cq-icon"></i>
+      <div>
+        <h3 class="h6 mb-1">Remember</h3>
+        <p class="mb-0">
+          A network name is not proof of safety. Encryption helps protect the
+          wireless link, but it does not guarantee that the network or the services
+          you reach are trustworthy. HTTPS matters, and a VPN may help in some
+          situations without guaranteeing security.
+        </p>
+      </div>
+    </div>
+  </div>
+</article>

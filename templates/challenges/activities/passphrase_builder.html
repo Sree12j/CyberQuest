@@ -1,0 +1,43 @@
+<article class="card cq-activity-card" aria-labelledby="activity-heading">
+  <div class="card-body">
+    <p class="cq-kicker">{{ step.eyebrow }}</p>
+    <h2 class="h4" id="activity-heading">{{ step.title }}</h2>
+    <p class="cq-challenge-copy">{{ step.intro }}</p>
+
+    <div class="cq-passphrase-box">
+      <span class="cq-passphrase-label">Sample passphrase</span>
+      <output id="cq-passphrase-output" class="cq-passphrase-output" aria-live="polite">
+        Select Generate sample to begin.
+      </output>
+      <span id="cq-passphrase-count" class="cq-passphrase-count">0 words</span>
+
+      <div class="cq-passphrase-actions">
+        <button type="button" class="btn btn-cq-glow" id="cq-passphrase-generate">
+          <i data-lucide="refresh-cw" class="cq-icon"></i>
+          Generate sample
+        </button>
+        <button type="button" class="btn btn-cq-outline" id="cq-passphrase-copy">
+          <i data-lucide="copy" class="cq-icon"></i>
+          Copy sample
+        </button>
+      </div>
+    </div>
+
+    <div class="cq-lesson-box mt-3">
+      <i data-lucide="lightbulb" class="cq-icon"></i>
+      <div>
+        <h3 class="h6 mb-1">Why passphrases help</h3>
+        <p class="mb-0">
+          A passphrase uses several words, so length does much of the work. Length
+          and unpredictability make guessing harder. Avoid personal information,
+          and use a unique passphrase for every account.
+        </p>
+      </div>
+    </div>
+
+    <p class="cq-section-note mt-3 mb-0">
+      Educational example only. Do not use generated samples for real accounts.
+      Nothing is stored after you leave this exercise.
+    </p>
+  </div>
+</article>

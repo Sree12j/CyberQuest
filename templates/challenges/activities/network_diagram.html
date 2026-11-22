@@ -1,0 +1,58 @@
+<article class="card cq-activity-card" aria-labelledby="activity-heading">
+  <div class="card-body">
+    <p class="cq-kicker">{{ step.eyebrow }}</p>
+    <h2 class="h4" id="activity-heading">{{ step.title }}</h2>
+    <p class="cq-challenge-copy">{{ step.intro }}</p>
+
+    <div class="cq-safety-banner" role="note">
+      <i data-lucide="info" class="cq-icon"></i>
+      <div>
+        This is a simulated diagram. It does not inspect your device, network or
+        internet connection.
+      </div>
+    </div>
+
+    <div class="cq-network-map" role="group" aria-label="Simulated network diagram">
+      <button type="button" class="cq-network-node" data-network-part="device"
+        data-explanation="A device is something you use to access the network, such as a laptop or phone.">
+        <i data-lucide="laptop" class="cq-icon"></i>
+        <span>Device</span>
+      </button>
+      <span class="cq-network-arrow" aria-hidden="true">→</span>
+      <button type="button" class="cq-network-node" data-network-part="wifi"
+        data-explanation="Wi-Fi is a wireless way for a device to connect to a local network. Its name alone is not proof of safety.">
+        <i data-lucide="wifi" class="cq-icon"></i>
+        <span>Wi-Fi</span>
+      </button>
+      <span class="cq-network-arrow" aria-hidden="true">→</span>
+      <button type="button" class="cq-network-node" data-network-part="router"
+        data-explanation="A router forwards traffic between your local network and other networks, such as the internet.">
+        <i data-lucide="router" class="cq-icon"></i>
+        <span>Router</span>
+      </button>
+      <span class="cq-network-arrow" aria-hidden="true">→</span>
+      <button type="button" class="cq-network-node" data-network-part="internet"
+        data-explanation="The internet is the global collection of networks that lets devices reach services around the world.">
+        <i data-lucide="globe" class="cq-icon"></i>
+        <span>Internet</span>
+      </button>
+      <span class="cq-network-arrow" aria-hidden="true">→</span>
+      <button type="button" class="cq-network-node" data-network-part="server"
+        data-explanation="A server is a computer that provides a service, such as a website or file store, to other devices.">
+        <i data-lucide="server" class="cq-icon"></i>
+        <span>Server</span>
+      </button>
+    </div>
+
+    <div class="cq-network-actions">
+      <button type="button" class="btn btn-cq-outline btn-sm" data-network-part="ip"
+        data-explanation="An IP address is like a destination label for a device on a network. It helps traffic find where to go.">
+        What is an IP address?
+      </button>
+    </div>
+
+    <div id="cq-network-explanation" class="cq-network-explanation" aria-live="polite">
+      Select a component to read its explanation.
+    </div>
+  </div>
+</article>

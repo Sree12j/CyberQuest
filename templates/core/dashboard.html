@@ -1,0 +1,451 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Student Dashboard | CyberQuest{% endblock %}
+{% block body_class %} cq-dashboard-page{% endblock %}
+
+{% block extra_head %}
+  {# Optional visual icons only. If the CDN is unavailable, labels still work. #}
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js" defer></script>
+{% endblock %}
+
+{% block content %}
+  <a class="cq-skip-link" href="#dashboard-main">Skip to dashboard content</a>
+
+  <div class="cq-dashboard-shell">
+    <aside
+      class="offcanvas offcanvas-start offcanvas-lg cq-sidebar"
+      tabindex="-1"
+      id="dashboardSidebar"
+      aria-labelledby="dashboardSidebarLabel"
+    >
+      <div class="offcanvas-header cq-sidebar-header">
+        <h2 class="offcanvas-title h5 mb-0" id="dashboardSidebarLabel">
+          <a class="cq-sidebar-brand" href="{% url 'home' %}">
+            <span class="cq-sidebar-mark">CQ</span>
+            <span>CyberQuest</span>
+          </a>
+        </h2>
+        <button
+          type="button"
+          class="btn-close btn-close-white d-lg-none"
+          data-bs-dismiss="offcanvas"
+          data-bs-target="#dashboardSidebar"
+          aria-label="Close navigation"
+        ></button>
+      </div>
+
+      <div class="offcanvas-body cq-sidebar-body">
+        <nav class="nav flex-column cq-side-nav" aria-label="Dashboard navigation">
+          <a class="nav-link active" href="{% url 'dashboard' %}" aria-current="page">
+            <i data-lucide="layout-dashboard" class="cq-icon"></i>
+            Dashboard
+          </a>
+          <a class="nav-link" href="#learning-paths">
+            <i data-lucide="route" class="cq-icon"></i>
+            Learning Paths
+          </a>
+          <a class="nav-link" href="{% url 'challenge_home' %}">
+            <i data-lucide="crosshair" class="cq-icon"></i>
+            Challenges
+          </a>
+          <a class="nav-link" href="#achievements">
+            <i data-lucide="award" class="cq-icon"></i>
+            Achievements
+          </a>
+          <a class="nav-link" href="#leaderboard">
+            <i data-lucide="trophy" class="cq-icon"></i>
+            Leaderboard
+          </a>
+          <a class="nav-link" href="#questmate">
+            <i data-lucide="bot" class="cq-icon"></i>
+            QuestMate AI
+          </a>
+        </nav>
+
+        <hr class="cq-sidebar-divider">
+
+        <nav class="nav flex-column cq-side-nav" aria-label="Account navigation">
+          <a class="nav-link" href="{% url 'account_home' %}">
+            <i data-lucide="user-round" class="cq-icon"></i>
+            My Account
+          </a>
+        </nav>
+
+        <div class="cq-sidebar-user">
+          <strong>{{ dashboard_name }}</strong>
+          <small>Signed in learner</small>
+          <form action="{% url 'logout' %}" method="post" class="m-0">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-cq-outline btn-sm cq-sidebar-logout">
+              <i data-lucide="log-out" class="cq-icon"></i>
+              Logout
+            </button>
+          </form>
+        </div>
+      </div>
+    </aside>
+
+    <div class="cq-dashboard-content">
+      <header class="cq-topbar">
+        <div class="cq-topbar-left">
+          <button
+            class="btn cq-menu-toggle d-lg-none"
+            type="button"
+            data-bs-toggle="offcanvas"
+            data-bs-target="#dashboardSidebar"
+            aria-controls="dashboardSidebar"
+            aria-label="Open dashboard navigation"
+          >
+            <i data-lucide="menu" class="cq-icon"></i>
+          </button>
+          <h2 class="cq-topbar-title">Student <span>Dashboard</span></h2>
+        </div>
+
+        <div class="cq-user-chip" title="Signed in as {{ dashboard_name }}">
+          <span class="cq-user-avatar">{{ dashboard_name|slice:":1"|upper }}</span>
+          <span class="cq-user-name">{{ dashboard_name }}</span>
+          <i data-lucide="shield-check" class="cq-icon"></i>
+        </div>
+      </header>
+
+      <div id="dashboard-main" class="cq-dashboard-body">
+        <div class="cq-demo-banner" role="note">
+          <i data-lucide="info" class="cq-icon"></i>
+          <span>{{ demo_data_notice }}</span>
+        </div>
+
+        <section class="cq-welcome" aria-labelledby="welcome-heading">
+          <div class="cq-welcome-copy">
+            <p class="cq-kicker">Learner command centre</p>
+            <h1 id="welcome-heading">Welcome back, <span>{{ dashboard_name }}</span>!</h1>
+            <p>Ready to strengthen your cybersecurity skills? Your next quest awaits.</p>
+            <div class="cq-status-row">
+              <span class="cq-status-pill">
+                <i data-lucide="shield-check" class="cq-icon"></i>
+                Status: <strong>Preview mode</strong>
+              </span>
+              <span class="cq-status-pill">
+                <i data-lucide="route" class="cq-icon"></i>
+                Next: <strong>Phishing Detective demo</strong>
+              </span>
+              <span class="cq-status-pill">
+                <i data-lucide="clock-3" class="cq-icon"></i>
+                Real tracking: <strong>Coming later</strong>
+              </span>
+            </div>
+          </div>
+
+          <div class="cq-profile-mini">
+            <div class="cq-profile-avatar">
+              <i data-lucide="user-round" class="cq-icon"></i>
+            </div>
+            <strong>{{ dashboard_name }}</strong>
+            <small>@{{ request.user.username }}</small>
+            <a class="btn btn-cq-outline btn-sm mt-3" href="{% url 'account_home' %}">
+              View Account
+            </a>
+          </div>
+        </section>
+
+        <section aria-labelledby="overview-heading">
+          <div class="cq-section-heading">
+            <div>
+              <p class="cq-kicker">Snapshot</p>
+              <h2 id="overview-heading">Your overview</h2>
+            </div>
+            <p class="cq-section-note">Four demo cards · no real progress data yet</p>
+          </div>
+
+          <div class="cq-stats-grid">
+            {% for stat in demo_stats %}
+              <article class="card cq-panel cq-stat-card">
+                <div class="card-body">
+                  <div class="cq-stat-top">
+                    <span class="cq-stat-label">{{ stat.label }}</span>
+                    <span class="cq-stat-icon tone-{{ stat.tone }}">
+                      <i data-lucide="{{ stat.icon }}" class="cq-icon"></i>
+                    </span>
+                  </div>
+                  <div class="cq-stat-value">{{ stat.value }}</div>
+                  <p class="cq-stat-note">
+                    <span class="cq-demo-tag">DEMO</span>
+                    {{ stat.note }}
+                  </p>
+                  {% if stat.progress %}
+                    <div class="cq-progress-track mt-3" style="--cq-progress: {{ stat.progress }}">
+                      <div class="cq-progress-fill"></div>
+                    </div>
+                  {% endif %}
+                </div>
+              </article>
+            {% endfor %}
+          </div>
+        </section>
+
+        <section id="learning-paths" aria-labelledby="paths-heading">
+          <div class="cq-section-heading">
+            <div>
+              <p class="cq-kicker">Choose a route</p>
+              <h2 id="paths-heading">Learning paths</h2>
+            </div>
+            <p class="cq-section-note">Published paths from the database · no learner progress tracked</p>
+          </div>
+
+          {% if learning_paths %}
+            <div class="cq-path-grid">
+              {% for path in learning_paths %}
+                <article class="card cq-panel cq-path-card">
+                  <div class="card-body">
+                    <span class="cq-path-icon tone-{{ path.tone }}">
+                      <i data-lucide="{{ path.icon }}" class="cq-icon"></i>
+                    </span>
+                    <h3 class="cq-path-title">{{ path.title }}</h3>
+                    <p class="cq-path-description">{{ path.description }}</p>
+
+                    <div class="cq-path-meta">
+                      <span class="cq-difficulty">{{ path.get_difficulty_display }}</span>
+                      <span>{{ path.lesson_count }} lesson{{ path.lesson_count|pluralize }}</span>
+                    </div>
+
+                    <div class="cq-path-footer">
+                      <small class="cq-section-note">{{ path.estimated_duration }} min</small>
+                      <a
+                        class="btn btn-cq-glow btn-sm"
+                        href="{% url 'learning_path_detail' path.slug %}"
+                      >
+                        Explore Path
+                      </a>
+                    </div>
+                  </div>
+                </article>
+              {% endfor %}
+            </div>
+          {% else %}
+            <div class="cq-empty-paths" role="status">
+              <i data-lucide="route" class="cq-icon"></i>
+              <p>No published learning paths yet. Run the seed command or publish a path in admin.</p>
+              <a class="btn btn-cq-outline btn-sm" href="{% url 'learning_paths' %}">
+                View Learning Paths
+              </a>
+            </div>
+          {% endif %}
+        </section>
+
+        <div class="cq-two-col">
+          <section id="daily-quest" aria-labelledby="quest-heading">
+            <div class="cq-section-heading">
+              <div>
+                <p class="cq-kicker">Daily mission</p>
+                <h2 id="quest-heading">Today's challenge</h2>
+              </div>
+            </div>
+
+            <article class="card cq-panel cq-panel-card cq-quest-card">
+              <div class="card-body">
+                <div class="d-flex align-items-center gap-2 mb-3">
+                  <span class="cq-stat-icon tone-green">
+                    <i data-lucide="{{ daily_quest.icon }}" class="cq-icon"></i>
+                  </span>
+                  <h3 class="cq-quest-title mb-0">{{ daily_quest.title }}</h3>
+                </div>
+
+                <p class="cq-quest-challenge">{{ daily_quest.challenge }}</p>
+                <p class="cq-quest-copy">{{ daily_quest.description }}</p>
+
+                <div class="cq-reward-box my-3">
+                  <i data-lucide="zap" class="cq-icon"></i>
+                  <span>Reward preview: <strong>{{ daily_quest.reward }}</strong></span>
+                </div>
+
+                <div class="cq-progress-track mb-3" style="--cq-progress: 0">
+                  <div class="cq-progress-fill"></div>
+                </div>
+                <p class="cq-stat-note mb-3">{{ daily_quest.progress }}</p>
+
+                <button
+                  type="button"
+                  class="btn btn-cq-glow w-100"
+                  disabled
+                  title="The challenge engine is not implemented yet"
+                >
+                  Start Quest
+                </button>
+                <p class="cq-stat-note text-center mt-2 mb-0">Challenge engine coming soon</p>
+              </div>
+            </article>
+          </section>
+
+          <section aria-labelledby="progress-heading">
+            <div class="cq-section-heading">
+              <div>
+                <p class="cq-kicker">Progress preview</p>
+                <h2 id="progress-heading">Learning overview</h2>
+              </div>
+            </div>
+
+            <article class="card cq-panel cq-panel-card">
+              <div class="card-body">
+                <div class="cq-progress-layout">
+                  <div class="cq-donut" style="--cq-progress: {{ progress_overview.percent }}">
+                    <div class="cq-donut-inner">
+                      <div>
+                        <div class="cq-donut-value">{{ progress_overview.percent }}%</div>
+                        <div class="cq-donut-label">Demo</div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="cq-metric-list">
+                    <div class="cq-metric-row">
+                      <span>Lessons completed</span>
+                      <strong>{{ progress_overview.lessons_done }}</strong>
+                    </div>
+                    <div class="cq-metric-row">
+                      <span>Learning time</span>
+                      <strong>{{ progress_overview.learning_time }}</strong>
+                    </div>
+                    <div class="cq-metric-row">
+                      <span>Current activity</span>
+                      <strong>{{ progress_overview.current_activity }}</strong>
+                    </div>
+                  </div>
+                </div>
+                <p class="cq-stat-note mt-3 mb-0">
+                  <span class="cq-demo-tag">DEMO</span>
+                  Visual indicators only. No real tracking is connected.
+                </p>
+              </div>
+            </article>
+          </section>
+        </div>
+
+        <section id="achievements" aria-labelledby="badges-heading">
+          <div class="cq-section-heading">
+            <div>
+              <p class="cq-kicker">Preview collection</p>
+              <h2 id="badges-heading">Achievement badges</h2>
+            </div>
+            <p class="cq-section-note">Sample badges · awarding logic is not implemented</p>
+          </div>
+
+          <div class="cq-badge-grid">
+            {% for badge in badges %}
+              <article class="cq-badge-item{% if not badge.earned %} is-locked{% endif %}">
+                <span class="cq-badge-icon tone-green">
+                  <i data-lucide="{{ badge.icon }}" class="cq-icon"></i>
+                </span>
+                <div>
+                  <strong>{{ badge.name }}</strong>
+                  <small>{{ badge.description }}</small>
+                  <span class="cq-demo-tag mt-1">
+                    {% if badge.earned %}Preview: unlocked{% else %}Preview: locked{% endif %}
+                  </span>
+                </div>
+              </article>
+            {% endfor %}
+          </div>
+        </section>
+
+        <div class="cq-two-col">
+          <section id="questmate" aria-labelledby="questmate-heading">
+            <div class="cq-section-heading">
+              <div>
+                <p class="cq-kicker">Future mentor</p>
+                <h2 id="questmate-heading">QuestMate AI preview</h2>
+              </div>
+            </div>
+
+            <article class="card cq-panel cq-panel-card">
+              <div class="card-body">
+                <div class="d-flex align-items-center gap-2 mb-3">
+                  <span class="cq-stat-icon tone-cyan">
+                    <i data-lucide="bot" class="cq-icon"></i>
+                  </span>
+                  <div>
+                    <h3 class="h6 mb-0">Your future AI study partner</h3>
+                    <small class="cq-section-note">Static conversation · no API connected</small>
+                  </div>
+                </div>
+
+                <div class="cq-chat mb-3">
+                  {% for message in questmate_messages %}
+                    <div class="cq-chat-bubble {{ message.tone }}">
+                      <small>{{ message.speaker }}</small>
+                      {{ message.text }}
+                    </div>
+                  {% endfor %}
+                </div>
+
+                <p class="cq-quest-copy">
+                  Later, QuestMate will explain concepts, give challenge hints, help you understand
+                  mistakes, recommend learning paths and generate practice questions.
+                </p>
+
+                <button type="button" class="btn btn-cq-glow w-100" disabled title="QuestMate AI is coming soon">
+                  Ask QuestMate
+                </button>
+                <p class="cq-stat-note text-center mt-2 mb-0">Coming soon · not a live AI response</p>
+              </div>
+            </article>
+          </section>
+
+          <div class="d-grid gap-4">
+            <section id="leaderboard" aria-labelledby="leaderboard-heading">
+              <div class="cq-section-heading">
+                <div>
+                  <p class="cq-kicker">Coming feature</p>
+                  <h2 id="leaderboard-heading">Leaderboard</h2>
+                </div>
+              </div>
+
+              <article class="card cq-panel cq-panel-card">
+                <div class="card-body">
+                  <div class="cq-leaderboard-list">
+                    {% for entry in leaderboard %}
+                      <div class="cq-leader-row">
+                        <span class="cq-leader-rank">{{ entry.rank }}</span>
+                        <span class="cq-leader-name">{{ entry.name }}</span>
+                        <span class="cq-leader-points">{{ entry.points }}</span>
+                      </div>
+                    {% endfor %}
+                  </div>
+                  <p class="cq-stat-note mt-3 mb-0">
+                    <span class="cq-demo-tag">DEMO</span>
+                    No leaderboard data is tracked yet.
+                  </p>
+                </div>
+              </article>
+            </section>
+
+            <section id="activity" aria-labelledby="activity-heading">
+              <div class="cq-section-heading">
+                <div>
+                  <p class="cq-kicker">Preview timeline</p>
+                  <h2 id="activity-heading">Recent activity</h2>
+                </div>
+              </div>
+
+              <article class="card cq-panel cq-panel-card">
+                <div class="card-body">
+                  <div class="cq-activity-list">
+                    {% for item in activities %}
+                      <div class="cq-activity-item">
+                        <i data-lucide="{{ item.icon }}" class="cq-icon"></i>
+                        <div>
+                          <strong>{{ item.title }}</strong>
+                          <small>{{ item.detail }}</small>
+                        </div>
+                        <span class="cq-activity-time">{{ item.time }}</span>
+                      </div>
+                    {% endfor %}
+                  </div>
+                </div>
+              </article>
+            </section>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}

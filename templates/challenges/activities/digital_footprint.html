@@ -1,0 +1,112 @@
+<article class="card cq-activity-card" aria-labelledby="activity-heading">
+  <div class="card-body">
+    <p class="cq-kicker">{{ step.eyebrow }}</p>
+    <h2 class="h4" id="activity-heading">{{ step.title }}</h2>
+    <p class="cq-challenge-copy">{{ step.intro }}</p>
+
+    <div class="cq-safety-banner" role="note">
+      <i data-lucide="info" class="cq-icon"></i>
+      <div>
+        <strong>Fictional profile.</strong>
+        Alex, the city, dates and contact details below are invented for training.
+        No real person's information is used.
+      </div>
+    </div>
+
+    <div class="cq-profile-grid">
+      <div class="cq-profile-card">
+        <div class="cq-profile-header">
+          <span class="cq-profile-avatar">A</span>
+          <div>
+            <h3 class="h5 mb-0">Alex Learner</h3>
+            <span class="cq-profile-status">Public profile</span>
+          </div>
+        </div>
+
+        <dl class="cq-profile-details">
+          <div>
+            <dt>Display name</dt>
+            <dd>Alex Learner</dd>
+          </div>
+          <div>
+            <dt>Location</dt>
+            <dd>Simulated City <span class="cq-risk-tag">public</span></dd>
+          </div>
+          <div>
+            <dt>Birthday</dt>
+            <dd>01/01/2010 <span class="cq-risk-tag">public</span></dd>
+          </div>
+          <div>
+            <dt>Contact</dt>
+            <dd>alex.learner@example.invalid <span class="cq-risk-tag">public</span></dd>
+          </div>
+          <div>
+            <dt>Interests</dt>
+            <dd>Gaming, cycling, robotics club</dd>
+          </div>
+          <div>
+            <dt>Privacy settings</dt>
+            <dd>Posts visible to everyone</dd>
+          </div>
+        </dl>
+
+        <div class="cq-profile-post">
+          <strong>Recent public post</strong>
+          <p class="mb-0">
+            “First practice at the community hall after school on Friday — come say hello!”
+          </p>
+        </div>
+      </div>
+
+      <aside class="cq-profile-tools">
+        <h3 class="h6">Selectable clues</h3>
+        <p class="cq-section-note">
+          Select a clue to see why it matters, then investigate the whole profile.
+        </p>
+
+        <div class="cq-clue-chips">
+          <button type="button" class="cq-clue-chip" data-profile-clue="Location: A public city can narrow down where Alex lives or studies.">
+            Public location
+          </button>
+          <button type="button" class="cq-clue-chip" data-profile-clue="Birthday: A birth date is a common security-answer clue and can support impersonation.">
+            Birthday
+          </button>
+          <button type="button" class="cq-clue-chip" data-profile-clue="Contact details: Public contact information can be used for scams or unwanted messages.">
+            Contact details
+          </button>
+          <button type="button" class="cq-clue-chip" data-profile-clue="Public posts: Routine and location details can reveal patterns over time.">
+            Public posts
+          </button>
+          <button type="button" class="cq-clue-chip" data-profile-clue="Privacy settings: Everyone can see the profile and posts, so the default exposure is high.">
+            Privacy settings
+          </button>
+        </div>
+
+        <div id="cq-profile-clue-detail" class="cq-clue-detail" aria-live="polite">
+          Select a clue to inspect it.
+        </div>
+
+        <button type="button" class="btn btn-cq-glow w-100 mt-3" id="cq-investigate-profile">
+          <i data-lucide="search" class="cq-icon"></i>
+          Investigate Profile
+        </button>
+      </aside>
+    </div>
+
+    <div id="cq-profile-risk-panel" class="cq-profile-risk-panel" aria-live="polite">
+      <h3 class="h6">Identified risks</h3>
+      <ul class="cq-risk-list">
+        <li>Public location and post details can reveal routines or places.</li>
+        <li>A public birthday can help someone guess security answers or impersonate Alex.</li>
+        <li>Public contact details invite scams and unwanted contact.</li>
+        <li>Essentially public privacy settings expose more information than necessary.</li>
+      </ul>
+      <p class="mb-0">
+        <strong>Why it matters:</strong> small details can be combined to build a
+        picture of someone. <strong>Recommendations:</strong> use friends-only or
+        private visibility, hide birthday and contact details, limit location
+        sharing, and review posts before publishing.
+      </p>
+    </div>
+  </div>
+</article>

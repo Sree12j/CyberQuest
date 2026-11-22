@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+
+{% block title %}Phishing Detective Mission 01 | CyberQuest{% endblock %}
+{% block body_class %} cq-challenge-page{% endblock %}
+
+{% block extra_head %}
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js" defer></script>
+{% endblock %}
+
+{% block content %}
+  <a class="btn btn-cq-outline btn-sm cq-challenge-back" href="{% url 'challenge_home' %}">
+    <i data-lucide="arrow-left" class="cq-icon"></i>
+    Back to Challenges
+  </a>
+
+  <section class="cq-challenge-hero" aria-labelledby="mission-title">
+    <div class="cq-challenge-brand">
+      <span class="cq-challenge-mark">CQ</span>
+      <span>CyberQuest Challenge Lab</span>
+    </div>
+
+    <p class="cq-kicker">Interactive investigation</p>
+    <h1 id="mission-title">{{ mission.title }}</h1>
+    <p class="cq-challenge-subtitle">{{ mission.subtitle }}</p>
+
+    <div class="cq-challenge-meta">
+      <span class="cq-mission-badge">{{ mission.number }}</span>
+      <span><i data-lucide="signal" class="cq-icon"></i> {{ mission.difficulty }}</span>
+      <span><i data-lucide="mail-warning" class="cq-icon"></i> {{ total_scenarios }} scenarios</span>
+      <span><i data-lucide="clock-3" class="cq-icon"></i> {{ mission.estimated_time }}</span>
+    </div>
+  </section>
+
+  <div class="cq-challenge-home-grid">
+    <article class="card cq-challenge-panel">
+      <div class="card-body">
+        <p class="cq-kicker">Mission briefing</p>
+        <h2 class="h4">Your assignment</h2>
+        <p class="cq-challenge-copy">{{ mission.description }}</p>
+
+        <h3 class="h6 mt-4">How it works</h3>
+        <ol class="cq-instruction-list">
+          <li>Read each simulated email and open the investigation clues.</li>
+          <li>Choose <strong>Phishing</strong> or <strong>Legitimate</strong>.</li>
+          <li>Submit your answer to reveal the explanation.</li>
+          <li>Continue through all five scenarios to see your final score.</li>
+        </ol>
+      </div>
+    </article>
+
+    <aside class="card cq-challenge-panel cq-start-panel">
+      <div class="card-body">
+        <span class="cq-challenge-icon tone-green">
+          <i data-lucide="crosshair" class="cq-icon"></i>
+        </span>
+        <h2 class="h5 mt-3">Ready, detective?</h2>
+        <p class="cq-challenge-copy">
+          Your score is kept only in this challenge session. No permanent XP,
+          badges, streaks or leaderboard points are awarded.
+        </p>
+
+        <div class="cq-score-note">
+          <i data-lucide="shield-check" class="cq-icon"></i>
+          <span>100 points per correct answer · 500 maximum</span>
+        </div>
+
+        <form action="{% url 'phishing_challenge' %}" method="post" class="mt-4">
+          {% csrf_token %}
+          <input type="hidden" name="action" value="start">
+          <button type="submit" class="btn btn-cq-glow w-100">Start Mission</button>
+        </form>
+
+        <p class="cq-section-note text-center mt-3 mb-0">
+          Signed in as {{ request.user.display_name|default:request.user.username }}
+        </p>
+      </div>
+    </aside>
+  </div>
+{% endblock %}

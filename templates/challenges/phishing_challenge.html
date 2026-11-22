@@ -1,0 +1,285 @@
+{% extends "base.html" %}
+
+{% block title %}{{ mission.full_title }} | CyberQuest{% endblock %}
+{% block body_class %} cq-challenge-page{% endblock %}
+
+{% block extra_head %}
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js" defer></script>
+{% endblock %}
+
+{% block content %}
+  <div class="cq-challenge-topbar">
+    <div class="cq-challenge-brand">
+      <span class="cq-challenge-mark">CQ</span>
+      <span>CyberQuest Challenge Lab</span>
+    </div>
+
+    <div class="cq-challenge-top-actions">
+      <span class="cq-user-chip-small">{{ display_name }}</span>
+      <a class="btn btn-cq-outline btn-sm" href="{% url 'challenge_home' %}">
+        <i data-lucide="arrow-left" class="cq-icon"></i>
+        Challenges
+      </a>
+      <a class="btn btn-cq-outline btn-sm" href="{% url 'learning_paths' %}">
+        Learning Paths
+      </a>
+    </div>
+  </div>
+
+  {% if completed %}
+    <section class="cq-completion" aria-labelledby="completion-title">
+      <span class="cq-completion-icon">
+        <i data-lucide="trophy" class="cq-icon"></i>
+      </span>
+      <p class="cq-kicker">Mission complete</p>
+      <h1 id="completion-title">Mission completed</h1>
+      <p class="cq-challenge-subtitle">{{ performance_message }}</p>
+
+      <div class="cq-result-grid">
+        <div class="cq-result-stat">
+          <span class="cq-result-value">{{ score }} / {{ max_score }}</span>
+          <span class="cq-result-label">Final score</span>
+        </div>
+        <div class="cq-result-stat">
+          <span class="cq-result-value">{{ correct_count }} / {{ total_scenarios }}</span>
+          <span class="cq-result-label">Correct</span>
+        </div>
+        <div class="cq-result-stat">
+          <span class="cq-result-value">{{ incorrect_count }} / {{ total_scenarios }}</span>
+          <span class="cq-result-label">Incorrect</span>
+        </div>
+        <div class="cq-result-stat">
+          <span class="cq-result-value">{{ accuracy }}%</span>
+          <span class="cq-result-label">Accuracy</span>
+        </div>
+      </div>
+
+      <details class="cq-review-panel">
+        <summary>Review your answers</summary>
+        <div class="cq-review-list">
+          {% for item in review %}
+            <div class="cq-review-row">
+              <span class="cq-review-number">{{ item.number }}</span>
+              <span class="cq-review-subject">{{ item.title }}</span>
+              <span class="cq-review-answer">
+                You: <strong>{{ item.selected_label }}</strong>
+              </span>
+              <span class="cq-review-answer">
+                Correct: <strong>{{ item.correct_label }}</strong>
+              </span>
+              <span class="cq-review-status {% if item.correct %}is-correct{% else %}is-incorrect{% endif %}">
+                {% if item.correct %}Correct{% else %}Review{% endif %}
+              </span>
+            </div>
+          {% endfor %}
+        </div>
+      </details>
+
+      <div class="cq-completion-actions">
+        <form action="{% url 'phishing_restart' %}" method="post">
+          {% csrf_token %}
+          <button type="submit" class="btn btn-cq-glow">
+            <i data-lucide="rotate-ccw" class="cq-icon"></i>
+            Restart Challenge
+          </button>
+        </form>
+        <a class="btn btn-cq-outline" href="{% url 'learning_paths' %}">
+          Back to Learning Paths
+        </a>
+      </div>
+
+      <p class="cq-section-note text-center mt-4 mb-0">
+        Session score only · no XP, badges or leaderboard points were awarded.
+      </p>
+    </section>
+  {% else %}
+    <section class="cq-mission-header" aria-labelledby="challenge-title">
+      <div>
+        <p class="cq-kicker">{{ mission.number }} · Live investigation</p>
+        <h1 id="challenge-title">{{ mission.title }}</h1>
+        <p class="cq-challenge-subtitle">{{ mission.subtitle }}</p>
+      </div>
+
+      <div class="cq-challenge-score" aria-label="Current challenge score">
+        <span class="cq-result-value">{{ score }} / {{ max_score }}</span>
+        <span class="cq-result-label">Current score</span>
+      </div>
+    </section>
+
+    <section class="cq-progress-card" aria-label="Mission progress">
+      <div class="d-flex flex-wrap justify-content-between gap-2">
+        <strong>Scenario {{ scenario_number }} of {{ total_scenarios }}</strong>
+        <span class="cq-section-note">Inspect the clues before deciding</span>
+      </div>
+      <div class="cq-progress-track mt-2" style="--cq-progress: {{ progress_percent }}">
+        <div class="cq-progress-fill"></div>
+      </div>
+    </section>
+
+    <div class="cq-challenge-grid">
+      <article class="card cq-email-card" aria-labelledby="email-heading">
+        <div class="cq-email-toolbar">
+          <span><i data-lucide="mail" class="cq-icon"></i> Simulated inbox</span>
+          <span class="cq-email-safety">Training simulation · no real email</span>
+        </div>
+
+        <div class="card-body">
+          <h2 class="cq-email-title h5" id="email-heading">{{ scenario.subject }}</h2>
+
+          <dl class="cq-email-headers">
+            <div>
+              <dt>From</dt>
+              <dd>{{ scenario.sender_name }} &lt;{{ scenario.sender_email }}&gt;</dd>
+            </div>
+            <div>
+              <dt>Subject</dt>
+              <dd>{{ scenario.subject }}</dd>
+            </div>
+            <div>
+              <dt>Date</dt>
+              <dd>{{ scenario.date }}</dd>
+            </div>
+          </dl>
+
+          <div class="cq-email-body">{{ scenario.body|linebreaks }}</div>
+
+          {% if scenario.link_text %}
+            <div class="cq-sim-link-box">
+              <span class="cq-sim-link-label">
+                <i data-lucide="mouse-pointer-click" class="cq-icon"></i>
+                Link shown in message
+              </span>
+              <span class="cq-sim-link-text">{{ scenario.link_text }}</span>
+              <span class="cq-sim-destination-label">Displayed destination (text only):</span>
+              <code class="cq-sim-destination">{{ scenario.link_destination }}</code>
+              <span class="cq-safety-note">This text is not clickable and opens nothing.</span>
+            </div>
+          {% endif %}
+
+          {% if scenario.attachment %}
+            <div class="cq-attachment-box">
+              <i data-lucide="paperclip" class="cq-icon"></i>
+              <span>Attachment indicator: <strong>{{ scenario.attachment }}</strong></span>
+            </div>
+          {% endif %}
+        </div>
+      </article>
+
+      <aside class="cq-investigation" aria-labelledby="investigation-heading">
+        <div class="cq-section-heading">
+          <div>
+            <p class="cq-kicker">Investigation tools</p>
+            <h2 class="h5" id="investigation-heading">Examine the evidence</h2>
+          </div>
+        </div>
+
+        <p class="cq-investigation-note">
+          Select each clue to expand it. Clues are safe text and never open external content.
+        </p>
+
+        <div class="cq-clue-list">
+          {% for clue in scenario.clues %}
+            <details class="cq-clue">
+              <summary>
+                <i data-lucide="{{ clue.icon }}" class="cq-icon"></i>
+                <span>{{ clue.label }}</span>
+                <i data-lucide="chevron-down" class="cq-icon cq-clue-chevron"></i>
+              </summary>
+              <p>{{ clue.detail }}</p>
+            </details>
+          {% endfor %}
+        </div>
+      </aside>
+    </div>
+
+    <section class="cq-answer-section" aria-labelledby="answer-heading">
+      <div class="cq-section-heading">
+        <div>
+          <p class="cq-kicker">Your decision</p>
+          <h2 class="h5" id="answer-heading">How would you classify this email?</h2>
+        </div>
+      </div>
+
+      {% if not result %}
+        <form action="{% url 'phishing_challenge' %}" method="post" class="cq-answer-form">
+          {% csrf_token %}
+          <input type="hidden" name="action" value="submit">
+
+          <div class="cq-answer-options">
+            {% for choice in answer_choices %}
+              <label class="cq-answer-option">
+                <input type="radio" name="answer" value="{{ choice.value }}" required>
+                <span class="cq-answer-icon">
+                  {% if choice.value == 'phishing' %}
+                    <i data-lucide="triangle-alert" class="cq-icon"></i>
+                  {% else %}
+                    <i data-lucide="shield-check" class="cq-icon"></i>
+                  {% endif %}
+                </span>
+                <span class="cq-answer-label">{{ choice.label }}</span>
+                <span class="cq-answer-check" aria-hidden="true"></span>
+              </label>
+            {% endfor %}
+          </div>
+
+          <button type="submit" class="btn btn-cq-glow cq-submit-answer">
+            Submit Answer
+          </button>
+        </form>
+      {% else %}
+        <div class="cq-feedback {% if result.correct %}is-correct{% else %}is-incorrect{% endif %}" role="status">
+          <div class="cq-feedback-head">
+            <span class="cq-feedback-icon">
+              {% if result.correct %}
+                <i data-lucide="circle-check-big" class="cq-icon"></i>
+              {% else %}
+                <i data-lucide="circle-x" class="cq-icon"></i>
+              {% endif %}
+            </span>
+            <div>
+              <h3 class="h5 mb-1">
+                {% if result.correct %}Correct classification{% else %}Not quite{% endif %}
+              </h3>
+              <p class="mb-0">
+                You selected <strong>{{ result.selected_label }}</strong>.
+                The correct answer is <strong>{{ result.correct_label }}</strong>.
+              </p>
+            </div>
+          </div>
+
+          <p class="cq-feedback-copy">{{ scenario.explanation }}</p>
+
+          {% if scenario.answer == 'phishing' %}
+            <h4 class="h6 mt-3">Warning signs</h4>
+            <ul class="cq-warning-list">
+              {% for warning in scenario.warning_signs %}
+                <li>{{ warning }}</li>
+              {% endfor %}
+            </ul>
+          {% else %}
+            <div class="cq-lesson-box">
+              <i data-lucide="lightbulb" class="cq-icon"></i>
+              <div>
+                <h4 class="h6 mb-1">Security lesson</h4>
+                <p class="mb-0">{{ scenario.security_lesson }}</p>
+              </div>
+            </div>
+          {% endif %}
+        </div>
+
+        <form action="{% url 'phishing_challenge' %}" method="post" class="cq-next-form">
+          {% csrf_token %}
+          <input type="hidden" name="action" value="next">
+          <button type="submit" class="btn btn-cq-glow">
+            {% if scenario_number == total_scenarios %}
+              Finish Mission
+            {% else %}
+              Next Scenario
+            {% endif %}
+            <i data-lucide="arrow-right" class="cq-icon"></i>
+          </button>
+        </form>
+      {% endif %}
+    </section>
+  {% endif %}
+{% endblock %}

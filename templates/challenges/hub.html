@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+
+{% block title %}Challenges | CyberQuest{% endblock %}
+{% block body_class %} cq-challenge-page{% endblock %}
+
+{% block extra_head %}
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js" defer></script>
+{% endblock %}
+
+{% block content %}
+  <div class="cq-challenge-topbar">
+    <div class="cq-challenge-brand">
+      <span class="cq-challenge-mark">CQ</span>
+      <span>CyberQuest Challenge Lab</span>
+    </div>
+
+    <div class="cq-challenge-top-actions">
+      <span class="cq-user-chip-small">{{ request.user.display_name|default:request.user.username }}</span>
+      <a class="btn btn-cq-outline btn-sm" href="{% url 'learning_paths' %}">
+        <i data-lucide="route" class="cq-icon"></i>
+        Learning Paths
+      </a>
+    </div>
+  </div>
+
+  <section class="cq-challenge-hero" aria-labelledby="hub-title">
+    <p class="cq-kicker">Challenge lab</p>
+    <h1 id="hub-title">Choose your mission</h1>
+    <p class="cq-challenge-subtitle">
+      Learn Cybersecurity. Solve Challenges. Protect the Digital World.
+    </p>
+    <div class="cq-challenge-meta">
+      <span class="cq-mission-badge">4 missions available</span>
+      <span><i data-lucide="signal" class="cq-icon"></i> Beginner friendly</span>
+      <span><i data-lucide="shield-check" class="cq-icon"></i> Simulated environments</span>
+    </div>
+  </section>
+
+  <section class="cq-hub-grid" aria-label="Available challenges">
+    {% for mission in missions %}
+      <article class="card cq-hub-card">
+        <div class="card-body">
+          <span class="cq-challenge-icon tone-{{ mission.tone }}">
+            <i data-lucide="{{ mission.icon }}" class="cq-icon"></i>
+          </span>
+
+          <p class="cq-kicker mt-3">{{ mission.number }}</p>
+          <h2 class="h4">{{ mission.title }}</h2>
+          <p class="cq-challenge-copy">{{ mission.description }}</p>
+
+          <div class="cq-hub-meta">
+            <span><i data-lucide="signal" class="cq-icon"></i> {{ mission.difficulty }}</span>
+            <span><i data-lucide="clock-3" class="cq-icon"></i> {{ mission.estimated_time }}</span>
+          </div>
+
+          <a class="btn btn-cq-glow w-100 mt-3" href="{{ mission.url }}">
+            View Mission
+            <i data-lucide="arrow-right" class="cq-icon"></i>
+          </a>
+        </div>
+      </article>
+    {% endfor %}
+  </section>
+
+  <p class="cq-section-note cq-hub-note text-center mt-4 mb-0">
+    Mission scores are session-only. No permanent XP, badges, streaks or leaderboard points are awarded.
+  </p>
+{% endblock %}

@@ -1,0 +1,76 @@
+<article class="card cq-activity-card" aria-labelledby="activity-heading">
+  <div class="card-body">
+    <p class="cq-kicker">{{ step.eyebrow }}</p>
+    <h2 class="h4" id="activity-heading">{{ step.title }}</h2>
+    <p class="cq-challenge-copy">{{ step.intro }}</p>
+
+    <div class="cq-safety-banner" role="note">
+      <i data-lucide="info" class="cq-icon"></i>
+      <div>
+        Simulated panel only. It is not connected to any social media account and
+        does not send or store your choices.
+      </div>
+    </div>
+
+    <div class="cq-settings-grid">
+      <label class="cq-setting-control" for="cq-setting-visibility">
+        <span>Profile visibility</span>
+        <select id="cq-setting-visibility">
+          <option value="public">Public</option>
+          <option value="friends">Friends only</option>
+          <option value="private">Private</option>
+        </select>
+      </label>
+
+      <label class="cq-setting-control" for="cq-setting-location">
+        <span>Location sharing</span>
+        <select id="cq-setting-location">
+          <option value="enabled">Enabled</option>
+          <option value="disabled">Disabled</option>
+        </select>
+      </label>
+
+      <label class="cq-setting-control" for="cq-setting-followers">
+        <span>Follower permissions</span>
+        <select id="cq-setting-followers">
+          <option value="anyone">Anyone</option>
+          <option value="approved">Approved followers only</option>
+        </select>
+      </label>
+
+      <label class="cq-setting-control" for="cq-setting-posts">
+        <span>Post visibility</span>
+        <select id="cq-setting-posts">
+          <option value="public">Public</option>
+          <option value="friends">Friends</option>
+          <option value="private">Private</option>
+        </select>
+      </label>
+
+      <label class="cq-setting-control" for="cq-setting-apps">
+        <span>App permissions</span>
+        <select id="cq-setting-apps">
+          <option value="allow">Allow</option>
+          <option value="deny">Deny unless needed</option>
+        </select>
+      </label>
+
+      <label class="cq-setting-control" for="cq-setting-data">
+        <span>Data sharing with partners</span>
+        <select id="cq-setting-data">
+          <option value="allowed">Allowed</option>
+          <option value="limited">Limited</option>
+        </select>
+      </label>
+    </div>
+
+    <button type="button" class="btn btn-cq-glow mt-3" id="cq-settings-review">
+      <i data-lucide="shield-check" class="cq-icon"></i>
+      Review simulated settings
+    </button>
+
+    <div id="cq-settings-feedback" class="cq-settings-feedback" aria-live="polite">
+      Adjust the simulated settings, then review them to see privacy guidance.
+    </div>
+  </div>
+</article>

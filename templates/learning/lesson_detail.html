@@ -1,0 +1,425 @@
+{% extends "base.html" %}
+{% load static lesson_notes %}
+
+{% block title %}{{ lesson.title }} | {{ path.title }} | CyberQuest{% endblock %}
+{% block body_class %} cq-learning-page cq-lesson-classroom{% endblock %}
+
+{% block extra_head %}
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js" defer></script>
+  <script src="{% static 'js/lesson.js' %}" defer></script>
+{% endblock %}
+
+{% block content %}
+  <div
+    class="cq-classroom-shell"
+    data-answer-url="{% url 'lesson_question_answer' path.slug lesson.slug %}"
+    data-complete-url="{% url 'lesson_complete' path.slug lesson.slug %}"
+    data-can-save="{{ can_save_progress|yesno:'true,false' }}"
+    data-visual="{{ lesson.visual_focus }}"
+  >
+    <form class="cq-csrf-form" aria-hidden="true">{% csrf_token %}</form>
+
+    <nav class="cq-classroom-breadcrumb" aria-label="Breadcrumb">
+      <a href="{% url 'learning_paths' %}">Learning Paths</a>
+      <span aria-hidden="true">/</span>
+      <a href="{% url 'learning_path_detail' path.slug %}">{{ path.title }}</a>
+      <span aria-hidden="true">/</span>
+      <span aria-current="page">{{ lesson.title }}</span>
+    </nav>
+
+    <header class="cq-classroom-header" aria-labelledby="lesson-title">
+      <div>
+        <p class="cq-kicker">Lesson {{ lesson_position }} of {{ lesson_total }}</p>
+        <h1 id="lesson-title">{{ lesson.title }}</h1>
+        <p class="cq-learning-subtitle">{{ lesson.description|default:path.description }}</p>
+      </div>
+      <div class="cq-classroom-progress">
+        <div class="cq-progress-label">
+          <span>Your progress</span>
+          <strong id="cq-progress-percent">{{ progress.percent|default:0 }}%</strong>
+        </div>
+        <div
+          class="cq-progress-track"
+          role="progressbar"
+          aria-label="Lesson progress"
+          aria-valuemin="0"
+          aria-valuemax="100"
+          aria-valuenow="{{ progress.percent|default:0 }}"
+          id="cq-progress-track"
+        >
+          <span id="cq-progress-fill" style="width: {{ progress.percent|default:0 }}%"></span>
+        </div>
+        <p class="cq-section-note" id="cq-progress-note">
+          {% if can_save_progress %}
+            {% if progress.completed %}
+              Completed · progress saved to your account
+            {% else %}
+              Progress saves automatically when you answer questions
+            {% endif %}
+          {% else %}
+            Sign in to save progress and knowledge-check results.
+          {% endif %}
+        </p>
+      </div>
+    </header>
+
+    <section class="cq-video-classroom" aria-labelledby="classroom-heading">
+      <div class="cq-video-column">
+        <div class="cq-classroom-card">
+          <div class="cq-classroom-card-head">
+            <div>
+              <p class="cq-kicker">Video classroom</p>
+              <h2 id="classroom-heading">Watch, listen and explore</h2>
+            </div>
+            <span class="cq-path-icon tone-{{ path.tone }}">
+              <i data-lucide="{{ path.icon }}" class="cq-icon"></i>
+            </span>
+          </div>
+
+          {% if video_src %}
+            <div class="cq-video-wrap" id="cq-video-wrap">
+              <video
+                id="cq-lesson-video"
+                controls
+                preload="metadata"
+                playsinline
+                {% if captions_src %}crossorigin="anonymous"{% endif %}
+              >
+                <source src="{{ video_src }}"{% if video_type %} type="{{ video_type }}"{% endif %}>
+                {% if captions_src %}
+                  <track kind="captions" src="{{ captions_src }}" srclang="en" label="English captions" default>
+                {% endif %}
+                Your browser does not support HTML5 video. The full transcript is available below.
+              </video>
+              <div class="cq-video-status" id="cq-video-status" role="status">
+                <span class="cq-video-spinner" aria-hidden="true"></span>
+                Loading lesson video…
+              </div>
+              <div class="cq-video-error" id="cq-video-error" role="alert" hidden>
+                This video could not be loaded. You can still use the transcript and lesson notes below.
+              </div>
+            </div>
+
+            <div class="cq-video-tools">
+              <label for="cq-video-speed">Playback speed</label>
+              <select id="cq-video-speed" aria-label="Video playback speed">
+                <option value="0.75">0.75×</option>
+                <option value="1" selected>1×</option>
+                <option value="1.25">1.25×</option>
+                <option value="1.5">1.5×</option>
+              </select>
+              <button type="button" class="btn btn-cq-outline btn-sm" id="cq-fullscreen-button">
+                <i data-lucide="maximize" class="cq-icon"></i>
+                Full screen
+              </button>
+            </div>
+          {% else %}
+            <div class="cq-video-empty" role="status">
+              <span class="cq-cta-icon"><i data-lucide="file-text" class="cq-icon"></i></span>
+              <div>
+                <h3>Text lesson · no video assigned yet</h3>
+                <p>
+                  This lesson works exactly as before. QuestMate can still narrate the
+                  explanation, and all notes and activities are available below.
+                </p>
+              </div>
+            </div>
+          {% endif %}
+        </div>
+
+        <section class="cq-classroom-card cq-visual-card" aria-labelledby="visual-heading">
+          <div class="cq-classroom-card-head">
+            <div>
+              <p class="cq-kicker">Visual explanation</p>
+              <h2 id="visual-heading">See the idea in action</h2>
+            </div>
+          </div>
+
+          {% if lesson.visual_focus == 'phishing' %}
+            <div class="cq-animation cq-anim-phishing" aria-label="A suspicious email arriving with a fake sender and link">
+              <div class="cq-anim-email">
+                <div class="cq-anim-email-top"><span>Inbox</span><span class="cq-anim-alert">NEW</span></div>
+                <p class="cq-anim-sender">Support Team &lt;verify-account@paypa1-example.com&gt;</p>
+                <p class="cq-anim-subject">Urgent: confirm your password</p>
+                <p class="cq-anim-link">http://secure-login-example.test/verify</p>
+                <span class="cq-anim-scan">Inspecting sender and link…</span>
+              </div>
+            </div>
+          {% elif lesson.visual_focus == 'password' %}
+            <div class="cq-animation cq-anim-password" aria-label="Weak and strong password comparison">
+              <div class="cq-anim-password-row cq-anim-weak">
+                <span>Weak</span><div class="cq-anim-bar"><i style="width: 22%"></i></div><code>summer2024</code>
+              </div>
+              <div class="cq-anim-password-row cq-anim-strong">
+                <span>Strong</span><div class="cq-anim-bar"><i style="width: 92%"></i></div><code>purple-lantern-coffee-7</code>
+              </div>
+              <p class="cq-anim-caption">Length and uniqueness increase strength.</p>
+            </div>
+          {% elif lesson.visual_focus == 'privacy' %}
+            <div class="cq-animation cq-anim-privacy" aria-label="Public versus private profile settings">
+              <div class="cq-anim-profile"><span class="cq-anim-avatar"></span><span>Alex's profile</span></div>
+              <div class="cq-anim-privacy-split">
+                <div class="cq-anim-public"><strong>Public</strong><span>posts · location · photos</span></div>
+                <div class="cq-anim-private"><strong>Private</strong><span>approved followers only</span></div>
+              </div>
+              <div class="cq-anim-dots" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+            </div>
+          {% elif lesson.visual_focus == 'network' %}
+            <div class="cq-animation cq-anim-network" aria-label="Device connecting through a router to the internet with a firewall">
+              <div class="cq-anim-node cq-anim-device">Device</div>
+              <div class="cq-anim-packet" aria-hidden="true"></div>
+              <div class="cq-anim-node cq-anim-router">Router</div>
+              <div class="cq-anim-firewall">Firewall <span>blocks suspicious traffic</span></div>
+              <div class="cq-anim-node cq-anim-internet">Internet</div>
+            </div>
+          {% elif lesson.visual_focus == 'mobile' %}
+            <div class="cq-animation cq-anim-mobile" aria-label="App permission request with unnecessary access highlighted">
+              <div class="cq-anim-phone">
+                <p>Torch App</p>
+                <span class="cq-anim-permit">Camera <b>Allow</b></span>
+                <span class="cq-anim-permit">Contacts <b class="cq-anim-deny">Deny</b></span>
+                <span class="cq-anim-permit">Location <b class="cq-anim-deny">Deny</b></span>
+              </div>
+            </div>
+          {% elif lesson.visual_focus == 'data' %}
+            <div class="cq-animation cq-anim-data" aria-label="Data backup and recovery with confidentiality, integrity and availability">
+              <div class="cq-anim-data-cycle"><span>Device</span><span>Backup</span><span>Restore</span></div>
+              <div class="cq-anim-cia"><span>Confidentiality</span><span>Integrity</span><span>Availability</span></div>
+            </div>
+          {% else %}
+            <div class="cq-animation cq-anim-generic" aria-label="CyberQuest lesson concepts">
+              <span class="cq-anim-shield"><i data-lucide="shield-check" class="cq-icon"></i></span>
+              <p>Key ideas appear here as the lesson content grows.</p>
+            </div>
+          {% endif %}
+        </section>
+      </div>
+
+      <aside class="cq-tutor-panel" aria-labelledby="questmate-heading">
+        <div class="cq-classroom-card cq-tutor-card">
+          <div class="cq-questmate-stage" id="cq-questmate" data-mood="idle">
+            <svg class="cq-questmate-svg" viewBox="0 0 240 260" role="img" aria-labelledby="questmate-title questmate-desc">
+              <title id="questmate-title">QuestMate</title>
+              <desc id="questmate-desc">An animated cybersecurity tutor wearing a headset and a shield badge.</desc>
+              <ellipse class="qm-shadow" cx="120" cy="243" rx="68" ry="9"></ellipse>
+              <g class="qm-body">
+                <path class="qm-hoodie" d="M64 246V166c0-30 25-54 56-54s56 24 56 54v80z"></path>
+                <path class="qm-hoodie-shade" d="M120 112c-17 0-31 6-42 16l42 46 42-46c-11-10-25-16-42-16z"></path>
+                <path class="qm-zip" d="M120 174v70"></path>
+              </g>
+              <g class="qm-head">
+                <circle class="qm-face" cx="120" cy="91" r="50"></circle>
+                <path class="qm-hair" d="M73 88c-2-31 20-55 48-55 29 0 49 22 47 53-10-13-22-19-35-19-12 14-34 19-60 21z"></path>
+                <g class="qm-eyes">
+                  <ellipse class="qm-eye" cx="103" cy="93" rx="6" ry="8"></ellipse>
+                  <ellipse class="qm-eye" cx="137" cy="93" rx="6" ry="8"></ellipse>
+                </g>
+                <path class="qm-brow qm-brow-left" d="M93 78l17-4"></path>
+                <path class="qm-brow qm-brow-right" d="M130 74l17 4"></path>
+                <g class="qm-mouths">
+                  <path class="qm-mouth qm-mouth-idle" d="M108 115q12 8 24 0"></path>
+                  <ellipse class="qm-mouth qm-mouth-speak" cx="120" cy="116" rx="8" ry="6"></ellipse>
+                  <path class="qm-mouth qm-mouth-happy" d="M104 112q16 20 32 0"></path>
+                  <path class="qm-mouth qm-mouth-think" d="M110 117h20"></path>
+                  <path class="qm-mouth qm-mouth-encourage" d="M106 113q14 14 28 0"></path>
+                </g>
+              </g>
+              <g class="qm-headset">
+                <path d="M68 92a52 52 0 0 1 104 0"></path>
+                <rect x="60" y="88" width="14" height="30" rx="6"></rect>
+                <rect x="166" y="88" width="14" height="30" rx="6"></rect>
+                <path class="qm-mic" d="M174 116q-10 18-32 18"></path>
+                <circle cx="140" cy="134" r="5"></circle>
+              </g>
+              <g class="qm-badge">
+                <path d="M120 172l16-6v16c0 11-8 19-16 22-8-3-16-11-16-22v-16z"></path>
+                <path class="qm-badge-check" d="M112 184l5 5 11-12"></path>
+              </g>
+            </svg>
+            <span class="cq-questmate-label" id="questmate-heading">QuestMate · your study guide</span>
+          </div>
+
+          <div class="cq-narration" id="cq-narration">
+            <p class="cq-kicker">Voice narration</p>
+            <h2 class="h5 mb-2">Listen with QuestMate</h2>
+            <p class="cq-section-note">
+              Uses your browser's local speech voices. CyberQuest does not send this text to an external speech service.
+            </p>
+
+            {% if narration_text %}
+              <div class="cq-narration-buttons" role="group" aria-label="Narration controls">
+                <button type="button" class="btn btn-cq-glow btn-sm" id="cq-narration-play">
+                  <i data-lucide="play" class="cq-icon"></i> Play
+                </button>
+                <button type="button" class="btn btn-cq-outline btn-sm" id="cq-narration-pause" disabled>
+                  <i data-lucide="pause" class="cq-icon"></i> Pause
+                </button>
+                <button type="button" class="btn btn-cq-outline btn-sm" id="cq-narration-resume" disabled>
+                  <i data-lucide="play-circle" class="cq-icon"></i> Resume
+                </button>
+                <button type="button" class="btn btn-cq-outline btn-sm" id="cq-narration-stop" disabled>
+                  <i data-lucide="square" class="cq-icon"></i> Stop
+                </button>
+              </div>
+
+              <div class="cq-narration-settings">
+                <label for="cq-narration-speed">Speed <output id="cq-speed-value">1.0×</output></label>
+                <input type="range" id="cq-narration-speed" min="0.7" max="1.4" step="0.1" value="1">
+
+                <label for="cq-voice-select">Voice</label>
+                <select id="cq-voice-select">
+                  <option value="">Browser default</option>
+                </select>
+              </div>
+
+              <p class="cq-narration-status" id="cq-narration-status" role="status">
+                Ready to narrate this lesson locally.
+              </p>
+            {% else %}
+              <p class="cq-narration-status" id="cq-narration-status" role="status">
+                No narration script is assigned to this lesson yet. The transcript and notes remain available.
+              </p>
+            {% endif %}
+
+            <div class="cq-caption-box" id="cq-caption-box" aria-live="polite">
+              {% if narration_text %}
+                Press play to see each explanation highlighted here.
+              {% else %}
+                No captions are available for this lesson yet.
+              {% endif %}
+            </div>
+
+            {% if transcript or narration_text %}
+              <details class="cq-transcript">
+                <summary>Captions &amp; full transcript</summary>
+                <div id="cq-narration-source" hidden>{{ narration_text }}</div>
+                <div class="cq-transcript-text">{{ transcript|linebreaks }}</div>
+              </details>
+            {% endif %}
+          </div>
+        </div>
+      </aside>
+    </section>
+
+    <section class="cq-classroom-card cq-notes-section" aria-labelledby="notes-heading">
+      <div class="cq-classroom-card-head">
+        <div>
+          <p class="cq-kicker">Lesson notes</p>
+          <h2 id="notes-heading">Read and review</h2>
+        </div>
+      </div>
+      <div class="cq-lesson-content cq-formatted-notes">
+        {{ lesson.content|lesson_notes }}
+      </div>
+    </section>
+
+    <section class="cq-classroom-card cq-takeaways-section" aria-labelledby="takeaways-heading">
+      <div class="cq-classroom-card-head">
+        <div>
+          <p class="cq-kicker">Key takeaways</p>
+          <h2 id="takeaways-heading">Remember these points</h2>
+        </div>
+      </div>
+      {% if takeaways %}
+        <ul class="cq-note-list">
+          {% for item in takeaways %}<li>{{ item }}</li>{% endfor %}
+        </ul>
+      {% else %}
+        <p class="cq-muted">No takeaways have been added to this lesson yet.</p>
+      {% endif %}
+    </section>
+
+    <section class="cq-classroom-card cq-quiz-section" aria-labelledby="quiz-heading">
+      <div class="cq-classroom-card-head">
+        <div>
+          <p class="cq-kicker">Knowledge check</p>
+          <h2 id="quiz-heading">Show what you learned</h2>
+          <p class="cq-section-note">Answers are checked on the server. No XP is awarded.</p>
+        </div>
+      </div>
+
+      {% if not can_save_progress %}
+        <div class="cq-login-notice" role="status">
+          <i data-lucide="log-in" class="cq-icon"></i>
+          <span>Sign in to submit answers and save your lesson progress.</span>
+          <a class="btn btn-cq-outline btn-sm" href="{% url 'login' %}?next={{ request.path }}">Sign in</a>
+        </div>
+      {% endif %}
+
+      {% if questions %}
+        <div class="cq-question-grid">
+          {% for question in questions %}
+            <article class="cq-question-card" data-question-id="{{ question.pk }}">
+              <p class="cq-kicker">Question {{ forloop.counter }}</p>
+              <h3>{{ question.prompt }}</h3>
+
+              {% if question.user_response %}
+                <div class="cq-saved-feedback {% if question.user_response.is_correct %}is-correct{% else %}is-review{% endif %}" role="status">
+                  <strong>{% if question.user_response.is_correct %}Correct.{% else %}Good try — review this one.{% endif %}</strong>
+                  <span>Correct answer: {{ question.correct_answer }}</span>
+                </div>
+                {% if question.explanation %}<p class="cq-question-explanation">{{ question.explanation }}</p>{% endif %}
+              {% endif %}
+
+              <form method="post" action="{% url 'lesson_question_answer' path.slug lesson.slug %}" class="cq-question-form">
+                {% csrf_token %}
+                <input type="hidden" name="question_id" value="{{ question.pk }}">
+                <fieldset class="cq-question-fieldset">
+                  <legend>Choose one answer</legend>
+                  {% for value, label in question.choices %}
+                    <label class="cq-question-option">
+                      <input type="radio" name="choice" value="{{ value }}" required>
+                      <span class="cq-question-letter">{{ value }}</span>
+                      <span>{{ label }}</span>
+                    </label>
+                  {% endfor %}
+                </fieldset>
+                <button type="submit" class="btn btn-cq-glow btn-sm" {% if not can_save_progress %}disabled{% endif %}>
+                  Check answer
+                </button>
+              </form>
+
+              <div class="cq-question-feedback" aria-live="polite" hidden></div>
+            </article>
+          {% endfor %}
+        </div>
+      {% else %}
+        <p class="cq-home-empty">Knowledge-check questions will be added to this lesson soon.</p>
+      {% endif %}
+
+      {% if can_save_progress %}
+        <div class="cq-complete-row">
+          <button type="button" class="btn btn-cq-outline" id="cq-complete-button">
+            <i data-lucide="circle-check" class="cq-icon"></i>
+            Mark lesson complete
+          </button>
+          <span class="cq-section-note">Completion is saved only to your account. No XP or badges are awarded.</span>
+        </div>
+      {% endif %}
+    </section>
+
+    <nav class="cq-lesson-nav" aria-label="Lesson navigation">
+      {% if previous_lesson %}
+        <a class="btn btn-cq-outline" href="{{ previous_lesson.get_absolute_url }}">
+          <i data-lucide="arrow-left" class="cq-icon"></i>
+          Previous: {{ previous_lesson.title }}
+        </a>
+      {% else %}
+        <span></span>
+      {% endif %}
+
+      <a class="btn btn-cq-glow" href="{% url 'learning_path_detail' path.slug %}">
+        Back to {{ path.title }}
+      </a>
+
+      {% if next_lesson %}
+        <a class="btn btn-cq-outline" href="{{ next_lesson.get_absolute_url }}">
+          Next: {{ next_lesson.title }}
+          <i data-lucide="arrow-right" class="cq-icon"></i>
+        </a>
+      {% else %}
+        <span></span>
+      {% endif %}
+    </nav>
+  </div>
+{% endblock %}

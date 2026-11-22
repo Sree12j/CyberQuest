@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+
+{% block title %}{{ mission.full_title }} | CyberQuest{% endblock %}
+{% block body_class %} cq-challenge-page{% endblock %}
+
+{% block extra_head %}
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js" defer></script>
+{% endblock %}
+
+{% block content %}
+  <a class="btn btn-cq-outline btn-sm cq-challenge-back" href="{% url 'challenge_home' %}">
+    <i data-lucide="arrow-left" class="cq-icon"></i>
+    Back to Challenges
+  </a>
+
+  <section class="cq-challenge-hero" aria-labelledby="mission-title">
+    <div class="cq-challenge-brand">
+      <span class="cq-challenge-mark">CQ</span>
+      <span>CyberQuest Challenge Lab</span>
+    </div>
+
+    <p class="cq-kicker">{{ mission.landing_kicker }}</p>
+    <h1 id="mission-title">{{ mission.title }}</h1>
+    <p class="cq-challenge-subtitle">{{ mission.description }}</p>
+
+    <div class="cq-challenge-meta">
+      <span class="cq-mission-badge">{{ mission.number }}</span>
+      <span><i data-lucide="signal" class="cq-icon"></i> {{ mission.difficulty }}</span>
+      <span><i data-lucide="clock-3" class="cq-icon"></i> {{ mission.estimated_time }}</span>
+      <span><i data-lucide="list-checks" class="cq-icon"></i> {{ total_questions }} scored questions</span>
+    </div>
+  </section>
+
+  <div class="cq-challenge-home-grid">
+    <article class="card cq-challenge-panel">
+      <div class="card-body">
+        <p class="cq-kicker">Mission briefing</p>
+        <h2 class="h4">Your objectives</h2>
+        <p class="cq-challenge-copy">{{ mission.subtitle }}</p>
+
+        <ul class="cq-objective-list">
+          {% for objective in mission.objectives %}
+            <li>
+              <i data-lucide="check" class="cq-icon"></i>
+              <span>{{ objective }}</span>
+            </li>
+          {% endfor %}
+        </ul>
+
+        <p class="cq-section-note mt-4 mb-0">
+          This mission includes {{ activity_count }} hands-on activity or activities and
+          {{ total_questions }} scored questions. Scores stay in this challenge session.
+        </p>
+      </div>
+    </article>
+
+    <aside class="card cq-challenge-panel cq-start-panel">
+      <div class="card-body cq-mission-visual">
+        <span class="cq-challenge-icon tone-{{ mission.tone }} cq-large-mission-icon">
+          <i data-lucide="{{ mission.icon }}" class="cq-icon"></i>
+        </span>
+        <h2 class="h5 mt-3">Ready, defender?</h2>
+        <p class="cq-challenge-copy">
+          Work through each exercise, submit answers on the server and review the
+          explanation after every question.
+        </p>
+
+        <div class="cq-score-note">
+          <i data-lucide="shield-check" class="cq-icon"></i>
+          <span>100 points per correct answer · {{ max_score }} maximum</span>
+        </div>
+
+        <form action="{{ start_url }}" method="post" class="mt-4">
+          {% csrf_token %}
+          <input type="hidden" name="action" value="start">
+          <button type="submit" class="btn btn-cq-glow w-100">Start Mission</button>
+        </form>
+
+        <p class="cq-section-note text-center mt-3 mb-0">
+          Signed in as {{ request.user.display_name|default:request.user.username }}
+        </p>
+      </div>
+    </aside>
+  </div>
+{% endblock %}

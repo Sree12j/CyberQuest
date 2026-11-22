@@ -1,0 +1,142 @@
+{% extends "base.html" %}
+
+{% block title %}{{ path.title }} | CyberQuest{% endblock %}
+{% block body_class %} cq-learning-page{% endblock %}
+
+{% block extra_head %}
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js" defer></script>
+{% endblock %}
+
+{% block content %}
+  <a class="btn btn-cq-outline btn-sm cq-detail-back" href="{% url 'learning_paths' %}">
+    <i data-lucide="arrow-left" class="cq-icon"></i>
+    All Learning Paths
+  </a>
+
+  <section class="cq-detail-hero" aria-labelledby="path-title">
+    <div class="cq-detail-hero-main">
+      <span class="cq-path-icon tone-{{ path.tone }}">
+        <i data-lucide="{{ path.icon }}" class="cq-icon"></i>
+      </span>
+      <div>
+        <p class="cq-kicker">Learning path</p>
+        <h1 id="path-title">{{ path.title }}</h1>
+        <p class="cq-learning-subtitle">{{ path.description }}</p>
+      </div>
+    </div>
+
+    <div class="cq-detail-meta">
+      <span class="cq-difficulty">{{ path.get_difficulty_display }}</span>
+      <span>
+        <i data-lucide="clock-3" class="cq-icon"></i>
+        {{ path.estimated_duration }} min total
+      </span>
+      <span>
+        <i data-lucide="book-open" class="cq-icon"></i>
+        {{ path.published_lesson_count }} published lesson{{ path.published_lesson_count|pluralize }}
+      </span>
+    </div>
+  </section>
+
+  {% if path.slug == 'phishing-detective' %}
+    {% url 'phishing_briefing' as challenge_url %}
+  {% elif path.slug == 'password-guardian' %}
+    {% url 'password_guardian_home' as challenge_url %}
+  {% elif path.slug == 'privacy-protector' %}
+    {% url 'privacy_protector_home' as challenge_url %}
+  {% elif path.slug == 'network-navigator' %}
+    {% url 'network_navigator_home' as challenge_url %}
+  {% endif %}
+
+  {% if challenge_url %}
+    <section class="cq-challenge-cta" aria-labelledby="challenge-cta-heading">
+      <span class="cq-path-icon tone-{{ path.tone }}">
+        <i data-lucide="{{ path.icon }}" class="cq-icon"></i>
+      </span>
+      <div>
+        <h2 class="h5 mb-1" id="challenge-cta-heading">Ready to practise?</h2>
+        <p class="cq-muted mb-0">
+          {% if path.slug == 'phishing-detective' %}
+            Launch Phishing Detective — Mission 01 to investigate five simulated emails.
+          {% elif path.slug == 'password-guardian' %}
+            Launch Password Guardian — Mission 02 to practise safer password habits.
+          {% elif path.slug == 'privacy-protector' %}
+            Launch Privacy Protector — Mission 03 to make smarter privacy decisions.
+          {% else %}
+            Launch Network Navigator — Mission 04 to explore safer network choices.
+          {% endif %}
+        </p>
+      </div>
+      <a class="btn btn-cq-glow" href="{{ challenge_url }}">Open Challenge</a>
+    </section>
+  {% endif %}
+
+  <section class="cq-lessons-section" aria-labelledby="lessons-heading">
+    <div class="cq-section-heading">
+      <div>
+        <p class="cq-kicker">Path contents</p>
+        <h2 id="lessons-heading">Lessons in this path</h2>
+      </div>
+      <p class="cq-section-note">Open a classroom for video, narration, quiz feedback and saved progress</p>
+    </div>
+
+    {% if lessons %}
+      <ol class="cq-lesson-list">
+        {% for lesson in lessons %}
+          <li class="cq-lesson-item" data-lesson-slug="{{ lesson.slug }}" data-order="{{ lesson.order }}">
+            <div class="cq-lesson-number">{{ lesson.order }}</div>
+
+            <div class="cq-lesson-body">
+              <div class="d-flex flex-wrap align-items-center gap-2 mb-1">
+                <h3 class="h6 mb-0">{{ lesson.title }}</h3>
+                <span class="cq-demo-tag">CLASSROOM READY</span>
+              </div>
+
+              <p class="cq-lesson-description">{{ lesson.description }}</p>
+
+              <div class="cq-lesson-meta">
+                <span>
+                  <i data-lucide="clock-3" class="cq-icon"></i>
+                  {{ lesson.estimated_minutes }} min
+                </span>
+                {% if lesson.has_video %}
+                  <span>
+                    <i data-lucide="video" class="cq-icon"></i>
+                    Video lesson
+                  </span>
+                {% endif %}
+                <span>
+                  <i data-lucide="message-circle" class="cq-icon"></i>
+                  QuestMate narration
+                </span>
+              </div>
+
+              <div class="cq-lesson-actions">
+                <a class="btn btn-cq-outline btn-sm" href="{{ lesson.get_absolute_url }}">
+                  Open classroom
+                  <i data-lucide="arrow-right" class="cq-icon"></i>
+                </a>
+                <span class="cq-section-note">Progress saves when you are signed in</span>
+              </div>
+
+              <details class="cq-lesson-details">
+                <summary>Preview lesson content</summary>
+                <div class="cq-lesson-content">{{ lesson.content|linebreaks }}</div>
+              </details>
+            </div>
+          </li>
+        {% endfor %}
+      </ol>
+    {% else %}
+      <div class="cq-learning-empty" role="status">
+        <span class="cq-path-icon tone-green">
+          <i data-lucide="book-open" class="cq-icon"></i>
+        </span>
+        <h2 class="h4">Lessons are on the way</h2>
+        <p class="cq-muted">
+          This path is published, but it has no published lessons yet.
+        </p>
+      </div>
+    {% endif %}
+  </section>
+{% endblock %}
